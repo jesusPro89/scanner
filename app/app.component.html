@@ -1,0 +1,32 @@
+<p *ngIf="availableDevices">
+    <label for="video-input-select">Select your camera:</label>
+    <select id="video-input-select" (change)="onDeviceSelectChange($event.target.value)">
+        <option value="" [selected]="!selectedDevice">No Device</option>
+        <option *ngFor="let device of availableDevices" [value]="device.deviceId" [selected]="selectedDevice && device.deviceId === selectedDevice.deviceId">{{ device.label }}</option>
+    </select>
+</p>
+
+<div [class.hidden]="!hasCameras">
+
+    <zxing-scanner #scanner class="test-class" [scannerEnabled]="scannerEnabled" [torch]="torch" [device]="selectedDevice" (camerasFound)="displayCameras($event)"
+        (scanSuccess)="handleQrCodeResult($event)" [cssClass]="{customClass:true}"></zxing-scanner>
+
+    <h2 *ngIf="!this.selectedDevice">No camera selected.</h2>
+
+    <p>
+        <button (click)="scannerEnabled=!scannerEnabled">Toggle Scanner [{{ scannerEnabled ? 'On': 'Off' }}]</button>
+        <button (click)="torch=!torch">Toggle Scanner's Torch [{{ torch ? 'On': 'Off' }}]</button>
+    </p>
+
+    <p>
+        Result:
+        <strong>{{ qrResultString }}</strong>
+    </p>
+
+</div>
+
+<div [class.hidden]="hasCameras">
+
+    <h1>Looks like your actual device does not have cameras, or I could not find'em. </h1>
+
+</div>
